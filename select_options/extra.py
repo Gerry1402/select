@@ -1,4 +1,5 @@
 def calc_ideal_columns(total_items: int, min_columns: int = 2, max_columns: int = 5, max_items: int | None = None) -> int:
+    # sourcery skip: use-assigned-variable
     """
     Calculate the ideal number of columns for displaying a given number of items.
 
