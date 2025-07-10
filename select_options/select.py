@@ -107,6 +107,10 @@ class Select(App):
         elif event.key == "r":
             self.selected.clear()
 
+        elif event.key == "escape":
+            self.exit(None)
+            return
+
         elif event.key in ("enter"):
             if self.is_dict:
                 result = [self.VALUES[i] for i in sorted(self.selected)] if self.multiselect else self.VALUES[self.current_index]
@@ -123,7 +127,7 @@ class Select(App):
         self.list_view.styles.grid_size_columns = self.columns
         self.list_view.styles.grid_columns = ("1fr " * self.columns).strip()
         yield self.list_view
-        yield Label(f"\nNavigate with ↑, ↓, →, ←. {"Select and desselect with space. Restart options with \"R\"." if self.multiselect else ""} Click enter to assign the value/s", expand=True)
+        yield Label(f"\nNavigate with ↑, ↓, →, ←. {"Select and desselect with space. Restart options with \"R\"." if self.multiselect else ""} Click enter to assign the value/s, (Esc) to not to.", expand=True)
         self.update_styles()  # Apply styles on startup
 
 if __name__ == "__main__":
