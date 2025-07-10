@@ -74,15 +74,6 @@ class Select(App):
         else:
             self.list_view.index = value
 
-    def compose(self) -> ComposeResult:
-        yield Label(f"{self.title}\n", expand=True)
-        self.list_view = ListView(*[ListItem(Label(opt))
-                                  for opt in self.OPTIONS])
-        self.list_view.styles.grid_size_columns = self.columns
-        self.list_view.styles.grid_columns = ("1fr " * self.columns).strip()
-        yield self.list_view
-        self.update_styles()  # Apply styles on startup
-
     def update_styles(self, *args, **kwargs):
         for i, item in enumerate(self.list_view.children):
             bg, fg, style = "#3B3B3B", "white", "none" # default
@@ -110,7 +101,7 @@ class Select(App):
         self.current_index += movements.get(event.key, 0)
 
         if event.key == "space" and self.multiselect:
-            if self.current_index in self.selected or len(self.selected) <= self.limit:
+            if self.current_index in self.selected or len(self.selected) < self.limit:
                 self.selected.symmetric_difference_update({self.current_index})
 
         elif event.key == "r":
@@ -125,13 +116,22 @@ class Select(App):
             return
         self.update_styles()
 
+    def compose(self) -> ComposeResult:
+        yield Label(f"{self.title}\n", expand=True)
+        self.list_view = ListView(*[ListItem(Label(opt))
+                                  for opt in self.OPTIONS])
+        self.list_view.styles.grid_size_columns = self.columns
+        self.list_view.styles.grid_columns = ("1fr " * self.columns).strip()
+        yield self.list_view
+        yield Label(f"\nNavigate with ↑, ↓, →, ←. {"Select and desselect with space. Restart options with \"R\"." if self.multiselect else ""} Click enter to assign the value/s", expand=True)
+        self.update_styles()  # Apply styles on startup
 
 if __name__ == "__main__":
 
     options = ["holaaa"]*12
     # Example usage:
     # Multiselect
-    selected_multi = Select(options, 'Select an option', multiselect=True, limit=3).run()
+    selected_multi = Select(options, 'Select one or various  with space', multiselect=True, limit=3).run()
     print("Multi-selected:", selected_multi)
     # Single select
     selected_single = Select(options, 'Select an option').run()
