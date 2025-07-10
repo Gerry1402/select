@@ -1,16 +1,12 @@
 from setuptools import setup, find_packages
 
-with open("README.md", "r") as fh:
-    long_description = fh.read()
-
 setup(
     name="select_options",
     version="0.1.0",
     author="Gerard Vello",
     author_email="gerard.vello@gmail.com",
     description="A simple library for creating interactive selection menus in terminal applications.",
-    long_description=long_description,
-    long_description_content_type="text/markdown",
+    long_description="A simple library for creating interactive selection menus in terminal applications. It is concieved as a library for personal use, but I'm open to proposals.",
     url="",
     packages=find_packages(),
     classifiers=[
