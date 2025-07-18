@@ -2,7 +2,7 @@ from textual.app import App, ComposeResult
 from textual.widgets import ListView, ListItem, Label
 from textual import events
 from .extra import calc_ideal_columns
-from typing import Iterable
+from typing import Iterable, Any
 
 
 class Select(App):
@@ -57,11 +57,9 @@ class Select(App):
             item.styles.color = fg
             item.styles.text_style = style
 
-    def get_results(self) -> list[str] | list[int] | str | int | None:
-        if self.is_dict:
-            return [self.values[i] for i in sorted(self.selected)] if self.multiselect else self.values[self.current_index]
-        else:
-            return [self.options[i] for i in sorted(self.selected)] if self.multiselect else self.options[self.current_index]
+    def get_results(self) -> list[Any] | Any | None:
+        final_value = self.values if self.is_dict else self.options
+        return [final_value[i] for i in sorted(self.selected)] if self.multiselect else final_value[self.current_index]
 
     async def on_key(self, event: events.Key) -> None:
         movements = {
