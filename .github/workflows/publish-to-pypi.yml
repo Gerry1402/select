@@ -9,7 +9,7 @@ jobs:
   build-and-publish:
     runs-on: ubuntu-latest
     permissions:
-      id-token: write  # Required for trusted publishing
+      id-token: write
     steps:
       - uses: actions/checkout@v4
       - name: Set up Python
@@ -26,6 +26,5 @@ jobs:
       - name: Publish package to PyPI
         uses: pypa/gh-action-pypi-publish@release/v1
         with:
-          # This uses PyPI Trusted Publishing (no password needed)
-          # See: https://docs.pypi.org/trusted-publishers/
+          password: ${{ secrets.PYPI_API_TOKEN }}
           skip-existing: true

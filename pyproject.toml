@@ -1,0 +1,18 @@
+[build-system]
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "select_options"
+version = "0.3.0"
+description = "A simple library for creating interactive selection menus in terminal applications."
+readme = { file = "README.md", content-type = "text/markdown" }
+authors = [{ name = "Gerard Vello", email = "gerard.vello@gmail.com" }]
+license = { file = "LICENSE" }
+requires-python = ">=3.7"
+dependencies = ["textual"]
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+]
