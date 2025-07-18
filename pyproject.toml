@@ -1,10 +1,15 @@
 [build-system]
-requires = ["setuptools>=61.0"]
+requires = ["setuptools>=42", "wheel", "setuptools_scm"]
 build-backend = "setuptools.build_meta"
+
+[tool.setuptools_scm]
+version_scheme = "post-release"
+local_scheme = "node-and-date"
+root = "."
 
 [project]
 name = "select_options"
-version = "0.3.0"
+dynamic = ["version"]
 description = "A simple library for creating interactive selection menus in terminal applications."
 readme = { file = "README.md", content-type = "text/markdown" }
 authors = [{ name = "Gerard Vello", email = "gerard.vello@gmail.com" }]

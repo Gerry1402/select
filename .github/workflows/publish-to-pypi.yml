@@ -4,6 +4,8 @@ on:
   push:
     tags:
       - 'v*.*.*'
+    branches:
+      - main
 
 jobs:
   build-and-publish:
@@ -23,6 +25,12 @@ jobs:
       - name: Build package
         run: |
           python -m build
+      - name: Bump version and push tag
+        uses: anothrNick/github-tag-action@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          DEFAULT_BUMP: patch  # or major, minor, etc.
+          WITH_V: true
       - name: Publish package to PyPI
         uses: pypa/gh-action-pypi-publish@release/v1
         with:
