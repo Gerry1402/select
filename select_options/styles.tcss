@@ -1,0 +1,39 @@
+Screen { align: center middle; }
+ListView {
+    width: 100%;
+    height: auto;
+    max-height: 80%;
+    background: #222222;
+}
+Label {
+    text-align: center;
+    width: 100%;
+}
+ListView {
+    height: auto;
+    layout: grid;
+    grid-gutter: 1 2;
+    padding: 1 2;
+    background: #222222;
+}
+ListItem {
+    min-height: 3;
+    color: #ccccff;
+    align: center middle;
+    background: #222222;
+    padding: 0 1;
+}
+ListItem:focus {
+    background: orange;
+    color: black;
+}
+.selected {
+    color: black;
+    text-style: bold;
+    background: red;
+}
+.selected Label:focus, ListItem:focus.selected Label {
+    background: yellow;
+    color: black;
+    text-style: bold;
+}

@@ -2,7 +2,7 @@ from setuptools import setup, find_packages
 
 setup(
     name="select_options",
-    version="0.1.0",
+    version="0.2.0",
     author="Gerard Vello",
     author_email="gerard.vello@gmail.com",
     description="A simple library for creating interactive selection menus in terminal applications.",

@@ -2,64 +2,32 @@ from textual.app import App, ComposeResult
 from textual.widgets import ListView, ListItem, Label
 from textual import events
 from .extra import calc_ideal_columns
+from typing import Iterable
 
 
 class Select(App):
-    CSS = """
-    Screen { align: center middle; }
-    ListView {
-        width: 100%;
-        height: auto;
-        max-height: 80%;
-        background: #222222;
-    }
-    Label {
-        text-align: center;
-        width: 100%;
-    }
-    ListView {
-        height: auto;
-        layout: grid;
-        grid-gutter: 1 2;
-        padding: 1 2;
-        background: #222222;
-    }
-    ListItem {
-        min-height: 3;
-        color: #ccccff;
-        align: center middle;
-        background: #222222;
-        padding: 0 1;
-    }
-    ListItem:focus {
-        background: orange;
-        color: black;
-    }
-    .selected {
-        color: black;
-        text-style: bold;
-        background: red;
-    }
-    .selected Label:focus, ListItem:focus.selected Label {
-        background: yellow;
-        color: black;
-        text-style: bold;
-    }
-    """
+    CSS_PATH = "styles.tcss"
 
-    def __init__(self, options: list[str] | dict, title: str, multiselect: bool = False, limit: int | None = None):
+    def __init__(self, options: Iterable, prompt: str, multiselect: bool = False, limit: int | None = None, columns: int | None = None):
         super().__init__()
-        self.OPTIONS: list[str] = options if isinstance(
-            options, list) else sorted(list(options.keys()))
+
         if isinstance(options, dict):
-            self.VALUES = [options[key] for key in self.OPTIONS]
-        self.is_dict: bool = isinstance(options, dict)
-        self.title: str = title
-        self.limit: int = limit if limit is not None else len(self.OPTIONS)
-        self.columns: int = calc_ideal_columns(len(self.OPTIONS))
-        self.rows: int = (len(self.OPTIONS) // self.columns) + (1 if len(self.OPTIONS) % self.columns > 0 else 0)
-        self.selected: set[int] = set()
+            self.options: list = sorted(options.keys())
+            self.values: list = [options[key] for key in self.options]
+        elif isinstance(options, set):
+            self.options: list = sorted(options)
+        else:
+            self.options: list = list(options)
+
+        self.prompt: str = prompt
+        self.limit: int = limit or len(self.options)
+        self.columns: int = columns or calc_ideal_columns(len(self.options))
         self.multiselect: bool = multiselect
+        self.selected: set[int] = set()
+    
+    @property
+    def is_dict(self) -> bool:
+        return hasattr(self, 'values')
 
     @property
     def current_index(self) -> int:
@@ -89,13 +57,19 @@ class Select(App):
             item.styles.color = fg
             item.styles.text_style = style
 
+    def get_results(self) -> list[str] | list[int] | str | int | None:
+        if self.is_dict:
+            return [self.values[i] for i in sorted(self.selected)] if self.multiselect else self.values[self.current_index]
+        else:
+            return [self.options[i] for i in sorted(self.selected)] if self.multiselect else self.options[self.current_index]
+
     async def on_key(self, event: events.Key) -> None:
         movements = {
             "up": -abs(self.columns - 1),
             "down": abs(self.columns - 1),
             "left": -1,
             "right": 1,
-            "home": 0,
+            "home": -self.current_index,
             "end": len(self.list_view.children) - 1,
         }
         self.current_index += movements.get(event.key, 0)
@@ -112,27 +86,27 @@ class Select(App):
             return
 
         elif event.key in ("enter"):
-            if self.is_dict:
-                result = [self.VALUES[i] for i in sorted(self.selected)] if self.multiselect else self.VALUES[self.current_index]
-            else:
-                result = sorted(self.selected) if self.multiselect else self.current_index
+            result = self.get_results()
             self.exit(result)
             return
         self.update_styles()
 
     def compose(self) -> ComposeResult:
-        yield Label(f"{self.title}\n", expand=True)
-        self.list_view = ListView(*[ListItem(Label(opt))
-                                  for opt in self.OPTIONS])
+        yield Label(f"{self.prompt}\n", expand=True)
+        self.list_view = ListView(*[ListItem(Label(str(opt)))
+                                  for opt in self.options])
         self.list_view.styles.grid_size_columns = self.columns
         self.list_view.styles.grid_columns = ("1fr " * self.columns).strip()
         yield self.list_view
-        yield Label(f"\nNavigate with ↑, ↓, →, ←. {"Select and desselect with space. Restart options with \"R\"." if self.multiselect else ""} Click enter to assign the value/s, (Esc) to not to.", expand=True)
+        yield Label(f"\nNavigate with ↑, ↓, →, ←. {"Select and desselect with space. Restart options with \"R\"." if self.multiselect else ""} Click \"Enter\" to assign the value/s, (Esc) to not to.", expand=True)
         self.update_styles()  # Apply styles on startup
 
 if __name__ == "__main__":
 
-    options = ["holaaa"]*12
+    options = { 
+        f"Option {str(i).zfill(2)}": f"Value {str(i).zfill(2)}" for i in range(1, 41)
+    }
+    options = range(1, 41)  # Example options as a range
     # Example usage:
     # Multiselect
     selected_multi = Select(options, 'Select one or various  with space', multiselect=True, limit=3).run()
