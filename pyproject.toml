@@ -18,6 +18,7 @@ requires-python = ">=3.7"
 dependencies = ["textual"]
 classifiers = [
     "Programming Language :: Python :: 3",
-    "License :: OSI Approved :: MIT License",
     "Operating System :: OS Independent",
 ]
+[tool.setuptools]
+packages = ["select_options"]
