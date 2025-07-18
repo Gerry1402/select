@@ -1,5 +1,5 @@
 [build-system]
-requires = ["setuptools>=42", "wheel", "setuptools_scm"]
+requires = ["setuptools>=77", "wheel", "setuptools_scm"]
 build-backend = "setuptools.build_meta"
 
 [tool.setuptools_scm]
@@ -13,7 +13,7 @@ dynamic = ["version"]
 description = "A simple library for creating interactive selection menus in terminal applications."
 readme = { file = "README.md", content-type = "text/markdown" }
 authors = [{ name = "Gerard Vello", email = "gerard.vello@gmail.com" }]
-license = { file = "LICENSE" }
+license = "MIT"
 requires-python = ">=3.7"
 dependencies = ["textual"]
 classifiers = [
